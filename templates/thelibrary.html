@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block stylesheets %}
+    <link href="{% static 'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/ga.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{% endblock %}
+{% block other_scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function(){
+            newactive('library');
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#id_searchBar").keyup(function(){
+                var search = $('#id_searchBar').val();
+                var data = {
+                    search: search
+                };
+                $.ajax({
+                    url: "{% url 'searchall' %}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(data){
+                        $("#id_searchBar").autocomplete({
+                            source : data.slice(0,5)
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block content%}
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+            <div class="row mt">
+                <div class="col-lg-12">
+                    <section id="portfolio">
+                        <div class="row">
+                            <div class="twelve columns collapsed">
+                                <div id="portfolio-wrapper" class="bgrid-quarters s-bgrid-thirds cf">
+                                    <header>
+                                        <br>
+                                        <center>
+                                            <div class="search-form">
+                                                <form method="get" id="search" class="f-right"> {% csrf_token %}
+                                                    {{ form | crispy }}
+                                                    <input type="submit" name="Submit" value="Search">
+                                                </form>
+                                            </div>
+                                        </center>
+                                    </header>
+                                    {% for book in books %}
+                                        {% url 'getBookDetails' book.isbn as book_url %}
+                                        <div class="columns portfolio-item">
+                                            <div class="item-wrap">
+                                                <a href="{{ book_url }}" title="{{ book.title }}">
+                                                    <img alt="" src="/media/{{ book.book_pic }}" style =" width: 210px; height: 332px ">
+                                                    <div class="overlay">
+                                                        <div class="portfolio-item-meta">
+                                                            <h5>{{ book.title }}</h5>
+                                                            <p>{{ book.author }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="link-icon"><i class="icon-plus"></i></div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}

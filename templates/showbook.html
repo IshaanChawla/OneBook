@@ -1,0 +1,33 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link href="{% static 'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/ga.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    </head>
+    <body>
+        <div id="modalBook" class="popup-modal mfp-hide">
+            <center>
+                <img height="375" width="250" src="" alt="" id="img"/>
+            </center>
+            <div class="description-box">
+                <h4 id="title"></h4>
+                <p>by <span id="book-author" style="color : black"></span></p>
+                <p>Health : <span id="health" style="color : black"></span></p>
+                <p>Mode of Exchange : <span id="moe" style="color : black"></span></p>
+                <a id="book-url">More Details</a>
+            </div>
+            <div class="link-box">
+                <a class="popup-modal-dismiss">Close</a>
+            </div>
+        </div>
+        <script src="{% static 'js/init.js' %}"></script>
+        <script src="{% static 'js/fancybox/jquery.fancybox.js' %}"></script>    
+        <script type="text/javascript">
+            $(function() {
+              jQuery(".fancybox").fancybox();
+            });
+        </script>
+        <script src="{% static 'js/magnific-popup.js' %}"></script>
+    </body>
+</html>

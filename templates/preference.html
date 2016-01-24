@@ -1,0 +1,61 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    </head>
+
+    <body>
+        <div id="preferenceModal" class="modal-box">
+            <form method="post" action="." data-ajax="false"> {% csrf_token %}
+                <header> 
+                    <h3 style="color : white">Update Shelf</h3>
+                </header>
+                <center>
+                    <div class="modal-body">
+                        <h1>Preference</h1>
+                        {{ state }}
+                        <hr>
+                        {% for x,y in form.fields.interested_genres.choices %}
+                            <input type="checkbox" id="id_interested_genres" name="interested_genres" value="{{ x }}">{{ y }}</option>
+                            {% if forloop.counter|divisibleby:4 %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </center>
+                <footer> 
+                    <input type="submit" class="btn btn-small" value="Save">
+                </footer>
+            </form>
+        </div>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+            $(function(){
+                $(window).resize(function() {
+                    $(".modal-box").css({
+                        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+                        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+                    });
+                });
+                $(window).resize();
+            });
+        </script>
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script>
+    </body>
+</html>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+

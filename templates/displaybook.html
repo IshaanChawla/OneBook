@@ -1,0 +1,114 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{% static 'css/star.css' %}">
+        <script>
+            $(document).ready(function(){
+                $("#star-{{ rating }}").prop("checked", true);
+            });
+        </script>
+    </head>
+    <body>
+        <img src="/media/{{ book.book_pic }}"><br>
+        Title : {{ book.title }}<br>
+        Author : {{ book.author }}<br>
+        Description : {{ book.description }}<br>
+        Language : {{ book.language }}<br>
+        <div id="rating">
+            Our_Rating : 
+            {% if book.avg_rating != 0.00 %}
+                {{ book.avg_rating }}<br>
+            {% else %}
+                No Rating's Available<br>
+            {% endif %}
+        </div>
+        Goodread's Rating : {{ book.goodread_avg_rating }}<br>
+        <div>
+        Genres :
+            {% for bookGenre in book.booksgenres_set.all %}
+                {{ bookGenre.genre.genre_name }}
+            {% endfor %}
+        </div>
+        
+        <div class="stars">
+            <input class="star star-5" id="star-5" type="radio" name="star" onclick="rateBook(5);"/>
+            <label class="star star-5" for="star-5"></label>
+            <input class="star star-4" id="star-4" type="radio" name="star" onclick="rateBook(4);"/>
+            <label class="star star-4" for="star-4"></label>
+            <input class="star star-3" id="star-3" type="radio" name="star" onclick="rateBook(3);"/>
+            <label class="star star-3" for="star-3"></label>
+            <input class="star star-2" id="star-2" type="radio" name="star" onclick="rateBook(2);"/>
+            <label class="star star-2" for="star-2"></label>
+            <input class="star star-1" id="star-1" type="radio" name="star" onclick="rateBook(1);"/>
+            <label class="star star-1" for="star-1"></label>
+        </div>
+
+        
+        <br><br>Comments
+        <div id="oldComment">
+            {% for comment in commentHistory %}
+                {{ comment.user }}<br>
+                {{ comment.timestamp }}<br>
+                {{ comment.comment }}<br>
+            {% endfor %}
+        </div>
+        
+        <div id="newComment">
+        </div>
+        
+        <input type="text" id="commentBox">
+        <button onclick="displayComment();">Comment</button>
+        
+        <script>
+            function rateBook(value){
+                {% url 'ratings' book.isbn as rating_url %}
+                var data = {
+                    rating: value
+                };
+                $.ajax({
+                    url: "{{ rating_url }}",
+                    data: data,
+                    dataType: 'json',
+                    success : function(data){
+                        alert('Hi');
+//                        document.getElementById('rating').value = data;
+                    }
+                });
+            }
+            function checkComment(text)
+            {
+                if(text.length == 0)
+                    return false;
+                for(index = 0;index<text.length;index++)
+                    if(text[index] != ' ')
+                        return true;
+                return false;
+            }
+            function displayComment(){
+                var text = $('#commentBox').val();
+                if(checkComment(text))
+                {
+                    {% url 'comments' book.isbn as comment_url %}
+                    var data = {
+                        text: text
+                    };
+                    $.ajax({
+                        url: "{{ comment_url }}",
+                        data: data,
+                        dataType: 'json',
+                        success : function(data){
+                            document.getElementById('newComment').innerHTML += data.slice(0,1) + '<br>';
+                            document.getElementById('newComment').innerHTML += data.slice(1,2) + '<br>';
+                            document.getElementById('newComment').innerHTML += data.slice(2,3) + '<br>';
+                        }
+                    });
+                }
+                document.getElementById('commentBox').value = '';
+            }
+        </script>
+    </body>
+</html>

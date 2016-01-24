@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/mapcss.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{% endblock %}
+{% block other_scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#id_searchBar").keyup(function(){
+                var search = $('#id_searchBar').val();
+                var data = {
+                    search: search
+                };
+                $.ajax({
+                    url: "{% url 'searchall' %}",
+                    data: data,
+                    dataType: 'json',
+                    success: function(data){
+                        $("#id_searchBar").autocomplete({
+                            source : data.slice(0,5)
+                        });
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            newactive('findabook');
+        })
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+        function initialize() 
+        {
+            var latitude = {{ mylat }};
+            var longitude = {{ mylon }};
+            var zoom = 13;
+
+            var LatLng = new google.maps.LatLng(latitude, longitude);
+
+            var icon = new google.maps.MarkerImage(
+                         '/static/img/marker4.ico',
+                         null,
+                         null,
+                         null,
+                         new google.maps.Size(30,30)
+                     );
+        
+            var mapOptions = {
+                zoom: zoom,
+                center: LatLng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            
+            var map = new google.maps.Map(document.getElementById('map'),mapOptions);
+        
+            var marker = new google.maps.Marker({
+                position: LatLng,
+                map: map,
+                icon: icon,
+                }
+            );
+            marker.setMap(map);
+        
+            var infowindow = new google.maps.InfoWindow({
+                content: "Me"
+            });
+            google.maps.event.addListener(marker, 'mouseover', function() {
+                infowindow.open(map,marker);
+            });
+            google.maps.event.addListener(marker, 'mouseout', function() {
+                infowindow.close();
+            });
+        
+            var icon = new google.maps.MarkerImage(
+                         '/static/img/marker6.ico',
+                         null,
+                         null,
+                         null,
+                         new google.maps.Size(30, 30) 
+                     );
+        
+             {% for obj in latlon %}
+            
+                 var other_LatLng = new google.maps.LatLng({{ obj.lat }},{{ obj.lon }})
+                 {% url 'seelibrary' obj.email as the_url %}
+                
+                 var other_marker = new google.maps.Marker({
+                     position: other_LatLng,
+                     map: map,
+                     icon : icon,
+                     url : '{{ the_url }}'
+                     }
+                 );
+                 other_marker.setMap(map);
+                
+                 con = '{{ obj.email }}'
+                 var other_infowindow = new google.maps.InfoWindow({
+                     content: con
+                 });
+                
+                 google.maps.event.addListener(other_marker, 'click', function() {
+                     window.location.href = this.url;
+                 });
+//                 google.maps.event.addListener(other_marker, 'mouseover', function() {
+//                     other_infowindow.open(map,other_marker);
+//                 });
+//                 google.maps.event.addListener(other_marker, 'mouseout', function() {
+//                     other_infowindow.close();
+//                 });
+             {% endfor %}
+        }
+        initialize();
+	</script>
+{% endblock %}
+{% block content %}
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12 main-chart">
+                    <div class="row mtbox">
+                        <div class="col-lg-9">
+                            <div id="map" style="width:800px; height:600px"></div>
+                        </div>
+                        <div class="col-lg-3">
+                            <br>
+                            <center>
+                                <div class="search-form">
+                                    <form method="get" id="search" class="f-right"> {% csrf_token %}
+                                        {{ form1 | crispy }}
+                                        {{ form2 | crispy }}
+                                        {{ form3 | crispy }}
+                                        <input type="submit" name="Submit" value="Search">
+                                    </form>
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}

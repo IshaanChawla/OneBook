@@ -1,0 +1,58 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    </head>
+
+    <body>
+        <div id="addbook" class="modal-box">
+            <form method="post" data-ajax="false" enctype="multipart/form-data"> {% csrf_token %}
+                <header> 
+                    <a href="#" class="js-modal-close close">×</a>
+                    <h3 style="color : white">Update Shelf</h3>
+                </header>
+                <center>
+                    <div class="modal-body">
+                        {{ form1 | crispy }}
+                        {{ form2 | crispy }}
+                        {{ errorOutput }}
+                        <input type="hidden" id="index" name="index">
+                    </div>
+                </center>
+                <footer> 
+                    <input type="submit" class="btn btn-small" value="Save">
+                    <a href="#" class="btn btn-small js-modal-close">Close</a> 
+                </footer>
+            </form>
+        </div>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+            $(function(){
+                var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
+                    $('a[data-modal-id]').click(function(e) {
+                        e.preventDefault();
+                    $("body").append(appendthis);
+                    $(".modal-overlay").fadeTo(500, 0.7);
+                        var modalBox = $(this).attr('data-modal-id');
+                        $('#'+modalBox).fadeIn($(this).data());
+                    });
+                    $(".js-modal-close, .modal-overlay").click(function() {
+                        $(".modal-box, .modal-overlay").fadeOut(500, function() {
+                            $(".modal-overlay").remove();
+                    });
+
+                });
+                $(window).resize(function() {
+                    $(".modal-box").css({
+                        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+                        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+                    });
+                });
+                $(window).resize();
+            });
+        </script>
+    </body>
+</html>

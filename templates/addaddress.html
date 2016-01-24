@@ -1,0 +1,31 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    </head>
+
+    <body>
+        <div id="addaddress" class="modal-box">
+            <form method="post" action="" data-ajax="false"> {% csrf_token %}
+                <header> 
+                    <a href="#" class="js-modal-close close">×</a>
+                    <h3>Address Form</h3>
+                </header>
+                <center>
+                    <div class="modal-body">
+                        {{ form | crispy }}
+                        <input type="hidden" id="index" name="index">
+                    </div>
+                </center>
+                <footer> 
+                    <input type="submit" class="btn btn-small" value="Save">
+                    <a href="#" class="btn btn-small js-modal-close" onclick="resetForm()">Close</a> 
+                </footer>
+            </form>
+        </div>
+    </body>
+</html>

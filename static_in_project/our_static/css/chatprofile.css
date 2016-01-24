@@ -1,0 +1,199 @@
+body {
+	width: 100vw;
+	min-height: 100vh;
+	color: #333333;
+	background: #FCFBF3;
+	font-size: 16px;
+	font-family: 'Lato', sans-serif;
+}
+
+a {
+	text-decoration: none;
+	color: #00936E;
+}
+
+a:hover {
+	color: #006D59;
+}
+.card {
+	background: #ffffff;
+	height: 150px;
+	width: 200px;
+	position: relative;
+	/*top: 20vh;*/
+	display: block;
+	margin: 0 auto;
+	border-radius: 3px;
+	border: 1px solid #e9e9e9;
+	box-shadow: 0 1px 4px 0px rgba(0,0,0,.05);
+	font-weight: 700;
+	z-index: 200;
+}
+.profile {
+	z-index: 300;
+	width: 100%;
+	background: none;
+	height: 150px;
+}	
+.profile img {
+	width: 90px;
+  height: 90px;
+  border-radius: 50%;
+	border-right: 25px;
+	top: 1.25em;
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	z-index: 100;
+	}
+.border {
+	width: 96px;
+	height: 96px;
+	border-radius: 49px;
+	z-index: 99;
+	background: #444;
+	position: relative;
+	display: block;
+	top: -73px;
+	margin: 0 auto;
+}
+
+/* Name */
+
+.name {
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
+	top:-12%;
+	font-size: 0.7em;
+}
+
+
+/* Statistics */
+
+.numbers {
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	width: 100%;
+	height: auto;
+	top: -6%;
+}
+
+#stats {
+	color: #c1c1c1;
+	height: auto;
+	position: relative;
+	width: 65%;
+	top: -1.5em;
+	text-align: left;
+	display: block;
+	margin: 0 auto;
+	font-size: .9em;
+}
+
+.divider {
+	position: relative;
+	display: block;
+	width: 30%;
+	opacity: 0;
+	bottom: 3rem;
+	margin: 0 auto;
+	height: 1px;
+	z-index: 500;
+	background: #c4c5c4;
+	/* Bg 
+	background: -moz-linear-gradient(left,  rgba(240,249,255,0.1) 0%, rgba(196,197,196,0.22) 15%, rgba(196,197,196,0.5) 50%, rgba(196,197,196,0.15) 85%, rgba(255,255,255,0) 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(240,249,255,0.1)), color-stop(15%,rgba(196,197,196,0.22)), color-stop(50%,rgba(196,197,196,0.5)), color-stop(85%,rgba(196,197,196,0.15)), color-stop(100%,rgba(255,255,255,0)));
+background: -webkit-linear-gradient(left,  rgba(240,249,255,0.1) 0%,rgba(196,197,196,0.22) 15%,rgba(196,197,196,0.5) 50%,rgba(196,197,196,0.15) 85%,rgba(255,255,255,0) 100%);
+background: -o-linear-gradient(left,  rgba(240,249,255,0.1) 0%,rgba(196,197,196,0.22) 15%,rgba(196,197,196,0.5) 50%,rgba(196,197,196,0.15) 85%,rgba(255,255,255,0) 100%);
+background: -ms-linear-gradient(left,  rgba(240,249,255,0.1) 0%,rgba(196,197,196,0.22) 15%,rgba(196,197,196,0.5) 50%,rgba(196,197,196,0.15) 85%,rgba(255,255,255,0) 100%);
+background: linear-gradient(to right,  rgba(240,249,255,0.1) 0%,rgba(196,197,196,0.22) 15%,rgba(196,197,196,0.5) 50%,rgba(196,197,196,0.15) 85%,rgba(255,255,255,0) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1af0f9ff', endColorstr='#00ffffff',GradientType=1 ); */
+
+}
+
+#stats td {
+	padding: 0.25rem .25em .35rem .5rem;
+}
+
+#stats td:first-child {
+	font-size: 1.1rem;
+	display: block;
+	text-align: right;
+	font-weight: 400;
+
+}
+
+#stats td:last-child {
+	position: relative;
+	font-size: .75rem;
+	font-weight: 700;
+	top: .1rem;
+}
+
+
+/* Follow Button */
+.btn {
+	text-align: center;
+}
+
+a.btn {
+		color: #fffffa;
+		text-decoration: none;
+}
+
+a.btn:hover {
+	text-decoration: none;
+}
+
+a.btn-follow:active {
+	border-bottom: none;
+	border-top: 1px solid #006D59;
+	background: #00896E;
+}
+
+.btn-follow {
+	background: #00936E;
+	height: 32px;
+	width: 50%;
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	bottom: 1.25em;
+	left: 25%;
+	font-size: .8em;
+	font-weight: 700;
+	line-height: 34px;
+	border-radius: 2px;
+	border-bottom: 1px solid #006D59;
+}
+
+
+/* Coded and Designed by Cole Townsend */
+
+#credits {
+	font-size: 12px;
+	color: #444444;
+	display: block;
+	text-align: center;
+	position: absolute;
+	z-index: 100;
+	width: 100vw;
+	bottom: 10vh;
+}
+
+#credits a {
+	color: #444444;
+}
+
+#credits a:hover {
+	border-bottom: 1px solid #444444;
+}
+
+#credits p {
+	margin-top: 25px;
+}
+	
+

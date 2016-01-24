@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block other_scripts %}
+    <script src="{% static 'js/modernizr.js' %}"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
+<!--    <script src="https://raw.github.com/aFarkas/html5shiv/master/src/html5shiv.js"></script>-->
+    <script>
+        $(document).ready(function(){
+            newactive('chatbutton');
+        });
+    </script>
+{% endblock %}
+{% block pushing_js %}{% endblock %}
+{% block content %}
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-9 main-chart">
+                    <div class="row mt">
+                        <div style="margin-left : 40px">
+                            {% for user in chat_user %}
+                                <div class="col-lg-4">
+                                    {% url 'chatuser' user.email as chatUser_url %}
+                                    <div class="card">
+                                        <div class="profile">
+                                            <img src="/media/{{ user.profile_pic }}"><div class="border"></div>
+                                        </div>
+                                        <div class="name"><p><a href="{{ chatUser_url }}">{{ user.email }}</a></p></div>
+                                        <div class="divider"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/chatprofile.css' %}" media="screen" type="text/css" />
+<!--    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>-->
+{% endblock %}

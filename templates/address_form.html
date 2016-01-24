@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    </head>
+    <body>
+        <div id="completeprofile" class="modal-box">
+            <form method="post" action="." enctype="multipart/form-data" data-ajax="false"> {% csrf_token %}
+                <header>
+                    <h3 style="color : white">Update Profile</h3>
+                </header>
+                <center>
+                    <div class="modal-body">
+                        <h1>Details</h1>
+                        <hr>
+                        {{ form1|crispy }}
+                        {{ form2|crispy }}
+                    </div>
+                </center>
+                <footer> 
+                    <input type="submit" class="btn btn-small js-modal-close" value="Save"> 
+                </footer>
+            </form>
+        </div>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+            $(function(){
+                $(window).resize(function() {
+                    $(".modal-box").css({
+                        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+                        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+                    });
+                });
+                $(window).resize();
+            });
+        </script>
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script>
+    </body>
+</html>

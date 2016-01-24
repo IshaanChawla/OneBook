@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block stylesheets %}
+    <link href="{% static 'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/ga.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+{% endblock %}
+{% block other_scripts %}
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        $(document).ready(function(){
+            newactive('wishlist');
+        });
+        function setData(obj){
+            document.getElementById('title').innerHTML = obj.getAttribute('data-title');
+            document.getElementById('book-author').innerHTML = obj.getAttribute('data-author');
+            document.getElementById('img').src = obj.getAttribute('data-pic');
+            document.getElementById('book-url').href = obj.getAttribute('data-url');
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <section id="main-content">
+        <section class="wrapper site-min-height">
+            <div class="row mt">
+                <div class="col-lg-12">
+                    <section id="portfolio">
+                        <div class="row">
+                            <div class="twelve columns collapsed">
+                                <div id="portfolio-wrapper" class="bgrid-quarters s-bgrid-thirds cf">
+                                    <header>
+                                        <a class="js-open-modal btn" href="#" data-modal-id="addbook" id="modalButton"><button class="btn btn-info">Add Book</button></a> 
+                                    </header>
+                                    {% for everyBook in wishListBooks %}
+                                        <div class="columns portfolio-item">
+                                            <div class="item-wrap">
+                                                {% url 'getBookDetails' everyBook.book.isbn as book_url %}
+                                                <a href="#modalBook" title="{{ everyBook.book.title }}" onclick="setData(this);" data-title="{{ everyBook.book.title }}" data-author="{{ everyBook.book.author }}" data-pic="/media/{{ everyBook.book.book_pic }}" data-url="{{ book_url }}">
+                                                    <img alt="" src="/media/{{ everyBook.book.book_pic }}" style =" width: 210px; height: 332px ">
+                                                    <div class="overlay">
+                                                        <div class="portfolio-item-meta">
+                                                            <h5>{{ everyBook.book.title }}</h5>
+                                                            <p>{{ everyBook.book.author }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="link-icon"><i class="icon-plus"></i></div>
+                                                </a>
+                                            </div>
+                                            {% url 'deletelistbook' everyBook.id '/myhome/wishlist' as delete_url%}
+                                            <a href="{{ delete_url }}"><button class="btn btn-info">Delete</button></a>
+                                            {% url 'readlistbook' everyBook.id as read_url%}
+                                            <a href="{{ read_url }}"><button class="btn btn-info">Read</button></a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </section>
+    {% include 'addbook.html' %}
+    {% include 'showlistbooks.html' %}
+{% endblock %}

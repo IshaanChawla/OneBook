@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-9 main-chart">
+                    <div class="row mt">
+                        <div class="col-lg-4" style="margin-left : 40px">
+                            <header>
+                                <h3>Your Preferences</h3>
+                                <hr>
+                            </header>
+                            {{ state }}
+                            <form method="post"> {% csrf_token %}
+                                {{ form | crispy }}
+                                <input type="submit" value="Save">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}

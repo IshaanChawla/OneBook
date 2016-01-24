@@ -1,0 +1,346 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load app_filters %}
+{% load push_tags %}
+{% push_script %}
+{% push_subscribe 'update' request.user %}
+{% push_subscribe 'notify' request.user %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>OneBook</title>
+        <link href="{% static 'bootstrap-3.3.5-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/zabuto_calendar.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'lineicons/style.css' %}">        
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+        <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet">
+        {% block stylesheets %}{% endblock %}
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script>
+            $(document).ready(function(){
+                setInterval(function(){
+                    $.ajax({
+                        url: "{% url 'seeNotification' %}",
+                        dataType: 'json',
+                        success: function(data){
+                            if(data != '')
+                            {
+                                for(i=0;i<data.length;i++){
+                                    var text = data[i];
+                                    text_array = text.split('_');
+                                    dict = {
+                                        'user' : text_array[0],
+                                        'object' : text_array[1]
+                                    }
+                                    createNotificationListElement(dict);
+                                }
+                            }
+                        }
+                    }); 
+                }, 5000);
+            });
+        </script>
+        {% block head_scripts %}{% endblock %}
+    </head>
+    <body>
+        <section id="container" >
+            <header class="header black-bg">
+                <div class="sidebar-toggle-box">
+                    <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+                </div>
+                <a href="{% url 'userhome' %}" class="logo"><b>OneBook</b></a>
+                <div class="nav notify-row" id="top_menu">
+                    <ul class="nav top-menu">
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="javascript: void(0);" onclick= "clearBadge('badgeNotification');">
+                                <i class="fa fa-tasks"></i>
+                                <span class="badge bg-theme" id="badgeNotification">{% if notes %}{{ notes | length }}{% endif %}</span>
+                            </a>
+                            <ul class="dropdown-menu extended tasks-bar" id = "notificationDropdown">
+                                <div class="notify-arrow notify-arrow-green"></div>
+                                <li>
+                                    <p class="green">You have <span id="numberOfNotes">{{ notes | length }}</span> Notifications</p>
+                                </li>
+                                {% for note in notes %}
+                                    <li>
+                                        <a href="#">
+                                            <div class="task-info">
+                                                <div class="desc">{{ note|lookup:'sender' }}</div>
+                                                <div class="percent">has sent you an Exchange Request for {{ note|lookup:"userBook"}}</div>
+                                            </div>
+                                        </a>
+                                    </li> 
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li id="header_inbox_bar" class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="javascript: void(0);" onclick="clearBadge('badgeChat');">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="badge bg-theme" id="badgeChat">{% if chatMessages %}{{ chatMessages | length }}{% endif %}</span>
+                            </a>
+                            <ul class="dropdown-menu extended inbox" id = "messageDropdown">
+                                <div class="notify-arrow notify-arrow-green"></div>
+                                <li>
+                                    <p class="green">You have <span id="numberOfMessages">{{ chatMessages | length }}</span> Message(s)</p>
+                                </li>
+                                {% for chatMessage in chatMessages %}
+                                    <li>
+                                        <a href="#">
+                                            <span class="photo"><img alt="avatar" src="/media/{{ chatMessage.sender.profile_pic }}"></span>
+                                            <span class="from">{{ chatMessage.sender.full_name }}</span><br>
+                                            <span class="time">{{ chatMessage.timestamp }}</span>
+                                            <span class="message">
+                                                    {{ chatMessage.text }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="top-menu">
+                    <ul class="nav pull-right top-menu">
+                        <li><a class="logout" href="{% url 'logout' %}">LogOut</a></li>
+                    </ul>
+                </div>
+            </header>
+            <aside>
+                <div id="sidebar"  class="nav-collapse ">
+                    <!-- sidebar menu start-->
+                    <ul class="sidebar-menu" id="nav-accordion">
+                        <p class="centered"><a href="#"><img src="/media/{{ request.user.profile_pic }}" class="img-circle" width="70"></a></p>
+                        <h5 class="centered">{{ request.user.full_name }}</h5>
+                        <li class="mt">
+                            <a href="{% url 'userhome' %}" id="dashboard">
+                                <i class="fa fa-dashboard"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'mylib' %}" id="myshelf">
+                                <i class="fa fa-book"></i>
+                                <span>My Shelf</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'search' %}" id="findabook">
+                                <i class="fa fa-search-plus"></i>
+                                <span>Find A Book</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'thelib' %}" id="library">
+                                <i class="fa fa-institution"></i>
+                                <span>Library</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'chats' %}" id="chatbutton">
+                                <i class="fa fa-comments-o"></i>
+                                <span>Chats</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'wishlist' %}" id="wishlist">
+                                <i class="fa fa-plus"></i>
+                                <span>Wish List</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'readlist' %}" id="readlist">
+                                <i class="fa fa-list"></i>
+                                <span>Read List</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'editprofile' %}" id="readlist">
+                                <i class="fa fa-user"></i>
+                                <span>Change Profile</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'editaddress' %}" id="readlist">
+                                <i class="fa fa-home"></i>
+                                <span>Change Address</span>
+                            </a>
+                        </li>
+                        <li class="sub-class">
+                            <a href="{% url 'editpreference' %}" id="readlist">
+                                <i class="fa fa-list"></i>
+                                <span>Change Preferences</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+            {% block content %}{% endblock %}
+        </section>
+<!--
+        <footer class="site-footer">
+            <div class="text-center">
+              Copyright © 2015 OneBook|| Aniruddha Saxena || Abb ye karke dikhao :P
+              <a href="index.html#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+            </div>
+        </footer>
+-->
+        <script src="{% static 'js/jquery.js' %}"></script>
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script>
+        <script class="include" type="text/javascript" src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
+        <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+        <script src="{% static 'js/jquery.nicescroll.js' %}" type="text/javascript"></script>
+        <script src="{% static 'js/jquery.sparkline.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/gritter/js/jquery.gritter.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/gritter-conf.js' %}"></script>
+        <script src="{% static 'js/zabuto_calendar.js' %}"></script>	
+        <script>window.jQuery || document.write('<script src=\"{% static 'js/jquery-1.10.2.min.js' %}\"><\/script>')</script>
+        <script src="{% static 'js/common-scripts.js' %}"></script>
+        <script type="application/javascript">
+            $(document).ready(function () {
+                $("#date-popover").popover({html: true, trigger: "manual"});
+                $("#date-popover").hide();
+                $("#date-popover").click(function (e) {
+                    $(this).hide();
+                });
+
+                $("#my-calendar").zabuto_calendar({
+                    action: function () {
+                        return myDateFunction(this.id, false);
+                    },
+                    action_nav: function () {
+                        return myNavFunction(this.id);
+                    },
+                    ajax: {
+                        url: "show_data.php?action=1",
+                        modal: true
+                    },
+                    legend: [
+                        {type: "text", label: "Special event", badge: "00"},
+                        {type: "block", label: "Regular event", }
+                    ]
+                });
+            });
+            function myNavFunction(id) {
+                $("#date-popover").hide();
+                var nav = $("#" + id).data("navigation");
+                var to = $("#" + id).data("to");
+                console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+            }
+        </script>
+        <script>
+            $(function(){
+              $("select.styled").customSelect();
+            });
+        </script>
+        <script type="text/javascript">
+            function replaceNotificationText(data){
+                var url = "/myhome/search/" + data.user + "/library";
+                document.body.innerHTML = document.body.innerHTML.replace('{sender}', data.user);
+                document.body.innerHTML = document.body.innerHTML.replace('{note}', data.object);
+                document.body.innerHTML = document.body.innerHTML.replace('{note_url}', url);
+            }
+            function replaceChatText(data){
+                var url = "/myhome/chats/" + data.user;
+                document.body.innerHTML = document.body.innerHTML.replace('{name}', data.user);
+                document.body.innerHTML = document.body.innerHTML.replace('{message}', data.object);
+                document.body.innerHTML = document.body.innerHTML.replace('{time}', data.time);
+                document.body.innerHTML = document.body.innerHTML.replace('{img}', data.img);
+                document.body.innerHTML = document.body.innerHTML.replace('{chat_url}', url);
+            }
+            function createChatListElement(data){
+                $("#messageDropdown").append($('#myMessageTemplate').html());
+                replaceChatText(data);
+                var number = document.getElementById('badgeChat').innerHTML;
+                if (number == ''){
+                    document.getElementById('badgeChat').innerHTML = '1';
+                    document.getElementById('numberOfMessages').textContent = '1';
+                }
+                else{
+                    var newNumber = parseInt(number) + 1;
+                    document.getElementById('badgeChat').innerHTML = newNumber;
+                    document.getElementById('numberOfMessages').textContent = newNumber;
+                }
+            }
+            
+            function createNotificationListElement(data){
+                $("#notificationDropdown").append($('#myNotificationTemplate').html());
+                replaceNotificationText(data);
+                var number = document.getElementById('badgeNotification').innerHTML;
+                if (number == ''){
+                    document.getElementById('badgeNotification').innerHTML = '1';
+                    document.getElementById('numberOfNotes').textContent = '1';
+                }
+                else{
+                    var newNumber = parseInt(number) + 1;
+                    document.getElementById('badgeNotification').innerHTML = newNumber;
+                    document.getElementById('numberOfNotes').textContent = newNumber;
+                }
+            }
+            
+            function pusherable_notify(event, data) {
+                var myemail = '{{ request.user.email }}';
+                if (data.user != myemail){ 
+                    if(event == 'update'){
+                        createChatListElement(data);
+                        var  recieved_data = {
+                            email : data.user,
+                            text : data.object
+                        };
+                        $.ajax({
+                            url: "{% url 'recieved' %}",
+                            data: recieved_data,
+                            dataType: 'json'
+                        });
+                        {% block pushing_js %}{% endblock %}
+                    }
+                    else if(event == 'notify'){
+                        createNotificationListElement(data);
+                    }
+                }
+            }
+                    
+            function completeProfile(srcModal){
+                $(srcModal).modal({
+                    show : true
+                });
+            }
+                    
+            function clearBadge(badgeId){
+                document.getElementById(badgeId).textContent = '';
+            }
+            function newactive(linkId){
+                document.getElementById(linkId).className = 'active';
+            }
+        </script>
+        <script id="myMessageTemplate" type="text/template">
+            <li>
+                <a href="{chat_url}">
+                    <span class="photo"><img alt="avatar" src="/media/{img}"></span>
+                    <span class="from">{name}</span><br>
+                    <span class="time">{time}</span>
+                    <span class="message">
+                            {message}
+                    </span>
+                </a>
+            </li>
+        </script>
+        <script id="myNotificationTemplate" type="text/template">
+            <li>
+                <a href="{note_url}">
+                    <div class="task-info">
+                        <div class="desc">{sender}</div>
+                        <div class="percent">{note}</div>
+                    </div>
+                </a>
+            </li>
+        </script>
+        {% block other_scripts %}{% endblock %}
+    </body>
+</html>

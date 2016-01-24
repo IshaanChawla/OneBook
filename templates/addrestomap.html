@@ -1,0 +1,80 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'css/mapcss.css' %}">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    </head> 
+    <body>
+        <div id="markerModal" class="modal-box">
+            <form method="post" action=""> {% csrf_token %}
+                <header> 
+                    <h3 style="color : white">Update Profile</h3>
+                </header>
+                <center>
+                    <div class="modal-body">
+                        <div id="map" style="width:400px; height:400px"></div>
+                        <input type="hidden" id="latitude" name="lat">
+                        <input type="hidden" id="longitude" name="lon">
+                        <input type="hidden" name="mark" id="mark">
+                    </div>
+                </center>
+                <footer> 
+                    <input type="submit" class="btn btn-small" value="Save"> 
+                </footer>
+            </form>
+        </div>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script>
+            function initialize() 
+            {
+                document.getElementById('latitude').value = {{ lat }};
+                document.getElementById('longitude').value = {{ lon }};
+
+                var latitude = {{ lat }};
+                var longitude = {{ lon }};
+                var zoom = 15;
+
+                var LatLng = new google.maps.LatLng(latitude, longitude);
+
+                var mapOptions = {
+                    zoom: zoom,
+                    center: LatLng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+
+                var map = new google.maps.Map(document.getElementById('map'),mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position: LatLng,
+                    map: map,
+                    draggable: true
+                    }
+                );
+
+                google.maps.event.addListener(marker, 'dragend', function(marker){
+                    var latLng = marker.latLng;
+                    document.getElementById('latitude').value = latLng.lat();
+                    document.getElementById('longitude').value = latLng.lng();
+                    }
+                );
+            }
+            initialize();
+        </script>
+        <script>
+            $(window).resize(function() {
+                $(".modal-box").css({
+                    top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+                    left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+                });
+            });
+            $(window).resize();
+        </script>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script>
+    </body>
+</html>
